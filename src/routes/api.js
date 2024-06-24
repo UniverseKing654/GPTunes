@@ -4,25 +4,24 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const OpenAI = require("openai");
-const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+const {VertexAI} = require('@google-cloud/vertexai');
 
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
+async function generate_from_text_input(projectId = process.env.PROJECT_ID) {
+  const vertexAI = new VertexAI({project: projectId, location: 'southamerica-west1'});
 
-router.get("prompt.show", "/", async (ctx) => {
-    try{
-        const completion = await openai.chat.completions.create({
-            messages: [{ role: "system", content: "You are a music recommender." }],
-            model: "gpt-3.5-turbo",
-          });
-        
-          console.log(completion.choices[0]);
-    }
-    catch(error){
-        ctx.body = error;
-        console.log(error);
-        ctx.status = 400;
+  const generativeModel = vertexAI.getGenerativeModel({
+    model: 'gemini-1.0-pro-002',
+  });
 
-    }
-})
+  const prompt =
+    "Can you recommend music if I like Car Seat Headrest?";
+
+  const resp = await generativeModel.generateContent(prompt);
+  const contentResponse = await resp.response;
+  console.log(JSON.stringify(contentResponse));
+}
 
 module.exports =  router;
