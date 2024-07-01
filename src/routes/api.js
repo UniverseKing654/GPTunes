@@ -8,14 +8,43 @@ const OpenAI = require("openai");
 const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
 
-router.get("prompt.show", "/", async (ctx) => {
+router.post("prompt.show", "/", async (ctx) => {
     try{
+
+        string = `Recomiendame 5 canciones tomando en cuenta que mis gustos son ${ctx.request.body.prompt}`
+
+        if (ctx.request.body.genre != null && ctx.request.body.genre != ''){
+            string += ` y que me gusta la música del genero ${ctx.request.body.genre}.`
+        }
+        if (ctx.request.body.mood != null && ctx.request.body.mood != ''){
+            string += ` y que me siento ${ctx.request.body.mood}.`
+        }
+        if (ctx.request.body.time != null && ctx.request.body.time != ''){
+            string += ` y que me gusta la musica de la epoca ${ctx.request.body.time}.`
+        }
+        if (ctx.request.body.bpm != null && ctx.request.body.bpm != ''){
+            string +=  ` y que me gusta la musica con un tempo de ${ctx.request.body.bpm}.`
+        }
+        if (ctx.request.body.language != null && ctx.request.body.language != ''){
+            string +=  ` y que me gusta la musica en los idiomas ${ctx.request.body.language}.`
+        }
+
+        
+        //string += `. Ademas quiero que me des las canciones en formato de lista de la siguiente manera: [{cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}]`
+
         const completion = await openai.chat.completions.create({
-            messages: [{ role: "system", content: "You are a music recommender." }],
+            messages: [
+                { role: "system", content: "You are a music recommender." },
+                { role: "user", content: string}
+            ],
             model: "gpt-3.5-turbo",
           });
         
           console.log(completion.choices[0]);
+          ctx.body = completion.choices[0].message.content;
+
+          console.log(ctx.request.body);
+          console.log(string);
     }
     catch(error){
         ctx.body = error;
