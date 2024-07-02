@@ -29,12 +29,9 @@ router.post("prompt.show", "/", async (ctx) => {
             string +=  ` y que me gusta la musica en los idiomas ${ctx.request.body.language}.`
         }
 
-        
-        //string += `. Ademas quiero que me des las canciones en formato de lista de la siguiente manera: [{cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}, {cancion: 'nombre de la cancion', artista: 'nombre del artista'}]`
-
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: "system", content: "You are a music recommender." },
+                { role: "system", content: "You are a music recommender. Your output will always follow the JSON format: [{cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}]" },
                 { role: "user", content: string}
             ],
             model: "gpt-3.5-turbo",
