@@ -31,7 +31,7 @@ router.post("prompt.show", "/", async (ctx) => {
 
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: "system", content: "You are a music recommender. Your output will always follow the JSON format: [{cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}, {cancion: 'song_name', artista: 'artist_name'}]" },
+                { role: "system", content: 'You are a music recommender. Your output will always follow the JSON format: [{"cancion": "song_name", "artista": "artist_name", "album": "album_name"}, ...]'},
                 { role: "user", content: string}
             ],
             model: "gpt-3.5-turbo",
